@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SuperInstance\Equipment\ConsensusEngine;
@@ -6,18 +7,33 @@ namespace SuperInstance\Equipment\ConsensusEngine;
 /**
  * Analysis result from a perspective
  */
- readonly class PerspectiveAnalysis
+class PerspectiveAnalysis
 {
     public function __construct(
-        public PerspectiveType $perspective,
-        public string     $verdict,
-        public float      $confidence,
-        public array      $arguments = [],
-        public array      $concerns = [],
-        public ?string    $emotionalTone = null,
-        public ?float     $logicalValidity = null,
-        public ?float     $ethicalAlignment = null,
-        public array      $suggestions = [],
+        public readonly PerspectiveType $perspective,
+        public readonly string $verdict,
+        public readonly float $confidence,
+        public readonly array $arguments = [],
+        public readonly array $concerns = [],
+        public readonly ?string $emotionalTone = null,
+        public readonly ?float $logicalValidity = null,
+        public readonly ?float $ethicalAlignment = null,
+        public readonly array $suggestions = [],
+    ) {}
+}
+
+/**
+ * Cross-examination between perspectives
+ */
+class CrossExamination
+{
+    public function __construct(
+        public readonly PerspectiveType $examiner,
+        public readonly PerspectiveType $respondent,
+        public readonly string $question,
+        public readonly string $response,
+        public readonly string $evaluation,
+        public readonly float $credibilityImpact,
     ) {}
 }
 
@@ -35,12 +51,11 @@ namespace SuperInstance\Equipment\ConsensusEngine;
  */
 class TripartiteDeliberation
 {
-    /** @var array<PerspectiveType, array{threshold: float, style: string}> */
+    /** @var array<string, array{threshold: float, style: string}> */
     private array $perspectiveConfigs = [];
 
-    public function __construct(
-        private readonly WeightCalculator $weightCalculator,
-    ) {
+    public function __construct()
+    {
         $this->perspectiveConfigs = [
             PerspectiveType::PATHOS->value => ['threshold' => 0.6, 'style' => 'collaborative'],
             PerspectiveType::LOGOS->value => ['threshold' => 0.7, 'style' => 'inquisitive'],
@@ -51,7 +66,11 @@ class TripartiteDeliberation
     /**
      * Analyzes a proposition from a specific perspective
      *
-     * @return PerspectiveAnalysis
+     * @param PerspectiveType $perspective The perspective to analyze from
+     * @param string $proposition The proposition to analyze
+     * @param string $context The context for deliberation
+     * @param array<PerspectiveOpinion> $previousOpinions Opinions from previous rounds
+     * @return PerspectiveAnalysis The perspective's analysis
      */
     public function analyze(
         PerspectiveType $perspective,
@@ -68,6 +87,11 @@ class TripartiteDeliberation
 
     /**
      * Analyzes from the Pathos perspective (emotion/intent)
+     *
+     * @param string $proposition The proposition
+     * @param string $context The context
+     * @param array<PerspectiveOpinion> $previousOpinions Previous opinions
+     * @return PerspectiveAnalysis
      */
     private function analyzeFromPathos(string $proposition, string $context, array $previousOpinions): PerspectiveAnalysis
     {
@@ -109,6 +133,11 @@ class TripartiteDeliberation
 
     /**
      * Analyzes from the Logos perspective (logic/reason)
+     *
+     * @param string $proposition The proposition
+     * @param string $context The context
+     * @param array<PerspectiveOpinion> $previousOpinions Previous opinions
+     * @return PerspectiveAnalysis
      */
     private function analyzeFromLogos(string $proposition, string $context, array $previousOpinions): PerspectiveAnalysis
     {
@@ -145,6 +174,11 @@ class TripartiteDeliberation
 
     /**
      * Analyzes from the Ethos perspective (ethics/truth)
+     *
+     * @param string $proposition The proposition
+     * @param string $context The context
+     * @param array<PerspectiveOpinion> $previousOpinions Previous opinions
+     * @return PerspectiveAnalysis
      */
     private function analyzeFromEthos(string $proposition, string $context, array $previousOpinions): PerspectiveAnalysis
     {
@@ -181,6 +215,10 @@ class TripartiteDeliberation
 
     // ===== Pathos helpers =====
 
+    /**
+     * @param string $text
+     * @return array<string>
+     */
     private function identifyStakeholders(string $text): array
     {
         $stakeholders = [];
@@ -199,6 +237,10 @@ class TripartiteDeliberation
         return count($stakeholders) > 0 ? $stakeholders : ['affected parties'];
     }
 
+    /**
+     * @param string $text
+     * @return array<string>
+     */
     private function identifyEmotionalRisks(string $text): array
     {
         $risks = [];
@@ -240,6 +282,9 @@ class TripartiteDeliberation
         return min(1.0, $confidence);
     }
 
+    /**
+     * @return array<string>
+     */
     private function generatePathosArguments(string $primaryEmotion, float $intensity, array $stakeholders, array $risks): array
     {
         $args = ["Addresses emotional needs of " . implode(' and ', $stakeholders)];
@@ -252,6 +297,9 @@ class TripartiteDeliberation
         return $args;
     }
 
+    /**
+     * @return array<string>
+     */
     private function identifyPathosConcerns(float $intensity, int $stakeholderCount, array $risks): array
     {
         $concerns = [];
@@ -269,6 +317,9 @@ class TripartiteDeliberation
         return count($concerns) > 0 ? $concerns : ['Emotional impact appears manageable'];
     }
 
+    /**
+     * @return array<string>
+     */
     private function generatePathosSuggestions(string $primaryEmotion, array $stakeholders): array
     {
         $suggestions = ["Consider communication strategy for " . implode(' and ', $stakeholders)];
@@ -280,6 +331,10 @@ class TripartiteDeliberation
 
     // ===== Logos helpers =====
 
+    /**
+     * @param string $text
+     * @return array<string>
+     */
     private function extractPremises(string $text): array
     {
         $premises = [];
@@ -295,6 +350,10 @@ class TripartiteDeliberation
         return count($premises) > 0 ? $premises : ['Implicit premises require examination'];
     }
 
+    /**
+     * @param string $text
+     * @return array<string>
+     */
     private function identifyAssumptions(string $text): array
     {
         $assumptions = [];
@@ -310,6 +369,10 @@ class TripartiteDeliberation
         return count($assumptions) > 0 ? $assumptions : ['Standard assumptions apply'];
     }
 
+    /**
+     * @param string $text
+     * @return array<string>
+     */
     private function identifyLogicalRisks(string $text): array
     {
         $risks = [];
@@ -351,6 +414,9 @@ class TripartiteDeliberation
         return min(1.0, max(0.0, $confidence));
     }
 
+    /**
+     * @return array<string>
+     */
     private function generateLogosArguments(string $structure, array $premises, array $assumptions): array
     {
         $args = ["Reasoning follows {$structure} structure"];
@@ -363,6 +429,9 @@ class TripartiteDeliberation
         return $args;
     }
 
+    /**
+     * @return array<string>
+     */
     private function identifyLogosConcerns(int $premiseCount, int $assumptionCount, array $risks): array
     {
         $concerns = [];
@@ -388,6 +457,9 @@ class TripartiteDeliberation
         return max(0.3, $validity);
     }
 
+    /**
+     * @return array<string>
+     */
     private function generateLogosSuggestions(array $assumptions, int $premiseCount): array
     {
         $suggestions = [];
@@ -402,6 +474,10 @@ class TripartiteDeliberation
 
     // ===== Ethos helpers =====
 
+    /**
+     * @param string $text
+     * @return array<string>
+     */
     private function identifyPrinciples(string $text): array
     {
         $principles = [];
@@ -420,6 +496,10 @@ class TripartiteDeliberation
         return count($principles) > 0 ? $principles : ['General ethical principles apply'];
     }
 
+    /**
+     * @param string $text
+     * @return array<string>
+     */
     private function identifyValuesAtStake(string $text): array
     {
         $values = [];
@@ -438,6 +518,10 @@ class TripartiteDeliberation
         return count($values) > 0 ? $values : ['Standard ethical values'];
     }
 
+    /**
+     * @param string $text
+     * @return array<string>
+     */
     private function identifyEthicalRisks(string $text): array
     {
         $risks = [];
@@ -478,6 +562,9 @@ class TripartiteDeliberation
         return min(1.0, max(0.0, $confidence));
     }
 
+    /**
+     * @return array<string>
+     */
     private function generateEthosArguments(string $framework, array $principles, array $values): array
     {
         $args = ["Ethical framework: {$framework}"];
@@ -490,6 +577,9 @@ class TripartiteDeliberation
         return $args;
     }
 
+    /**
+     * @return array<string>
+     */
     private function identifyEthosConcerns(array $risks, int $valueCount): array
     {
         $concerns = [];
@@ -511,6 +601,9 @@ class TripartiteDeliberation
         return max(0.3, $alignment);
     }
 
+    /**
+     * @return array<string>
+     */
     private function generateEthosSuggestions(array $risks, string $framework, int $valueCount): array
     {
         $suggestions = [];
@@ -534,6 +627,9 @@ class TripartiteDeliberation
         return null;
     }
 
+    /**
+     * @param array<string> $risks
+     */
     private function hasSignificantRisks(array $risks): bool
     {
         foreach ($risks as $risk) {
@@ -542,5 +638,31 @@ class TripartiteDeliberation
             }
         }
         return false;
+    }
+
+    /**
+     * Sets the configuration for a perspective
+     *
+     * @param PerspectiveType $perspective The perspective
+     * @param array{threshold?: float, style?: string} $config Configuration
+     */
+    public function setPerspectiveConfig(PerspectiveType $perspective, array $config): void
+    {
+        $current = $this->perspectiveConfigs[$perspective->value] ?? ['threshold' => 0.6, 'style' => 'collaborative'];
+        $this->perspectiveConfigs[$perspective->value] = [
+            'threshold' => $config['threshold'] ?? $current['threshold'],
+            'style' => $config['style'] ?? $current['style'],
+        ];
+    }
+
+    /**
+     * Gets the configuration for a perspective
+     *
+     * @param PerspectiveType $perspective The perspective
+     * @return array{threshold: float, style: string}
+     */
+    public function getPerspectiveConfig(PerspectiveType $perspective): array
+    {
+        return $this->perspectiveConfigs[$perspective->value] ?? ['threshold' => 0.6, 'style' => 'collaborative'];
     }
 }

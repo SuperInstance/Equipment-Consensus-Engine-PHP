@@ -6,22 +6,22 @@ namespace SuperInstance\Equipment\ConsensusEngine;
 /**
  * WeightProfile for a domain
  */
- readonly class WeightProfile
+class WeightProfile
 {
     public function __construct(
-        public float        $pathosWeight,
-        public float        $logosWeight,
-        public float        $ethosWeight,
-        public DomainType   $domain,
-        public string       $description = '',
-        public array        $adjustmentRules = [],
+        public readonly float $pathosWeight,
+        public readonly float $logosWeight,
+        public readonly float $ethosWeight,
+        public readonly DomainType $domain,
+        public readonly string $description = '',
+        public readonly array $adjustmentRules = [],
     ) {}
 }
 
 /**
  * WeightAdjustmentRule for dynamically adjusting weights based on content
  */
- readonly class WeightAdjustmentRule
+class  WeightAdjustmentRule
 {
     public function __construct(
         public string           $name,
@@ -35,7 +35,7 @@ namespace SuperInstance\Equipment\ConsensusEngine;
 /**
  * DomainCharacteristics for a domain
  */
- readonly class DomainCharacteristics
+class  DomainCharacteristics
 {
     public function __construct(
         public float $emotionalImportance,

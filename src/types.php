@@ -9,7 +9,7 @@ use Exception;
 /**
  * Configuration for the ConsensusEngine
  */
- readonly class ConsensusEngineConfig
+class  ConsensusEngineConfig
 {
     public function __construct(
         public int    $maxRounds = 5,
@@ -56,7 +56,7 @@ use Exception;
 /**
  * Input for a deliberation request
  */
- readonly class DeliberationInput
+class  DeliberationInput
 {
     public function __construct(
         public string     $proposition,
@@ -74,7 +74,7 @@ use Exception;
 /**
  * A single perspective's opinion on a proposition
  */
- readonly class PerspectiveOpinion
+class  PerspectiveOpinion
 {
     public function __construct(
         public PerspectiveType $perspective,
@@ -104,7 +104,7 @@ use Exception;
 /**
  * Cross-examination between two perspectives
  */
- readonly class CrossExamination
+class  CrossExamination
 {
     public function __construct(
         public PerspectiveType $challenger,
@@ -119,7 +119,7 @@ use Exception;
 /**
  * A record of a single deliberation round
  */
- readonly class DeliberationRound
+class  DeliberationRound
 {
     public function __construct(
         public int                $roundNumber,
@@ -158,7 +158,7 @@ enum AuditAction: string
 /**
  * An entry in the audit trail
  */
- readonly class AuditEntry
+class  AuditEntry
 {
     public function __construct(
         public string           $id,
@@ -183,7 +183,7 @@ enum AuditAction: string
 /**
  * Metadata about the consensus result
  */
- readonly class ConsensusMetadata
+class  ConsensusMetadata
 {
     public function __construct(
         public int          $durationMs,
@@ -204,7 +204,7 @@ enum AuditAction: string
 /**
  * The final result of a consensus deliberation
  */
- readonly class ConsensusResult
+class  ConsensusResult
 {
     public function __construct(
         public bool                  $consensus,
@@ -286,7 +286,7 @@ enum ResolutionStrategy: string
 /**
  * A record of a detected conflict
  */
- readonly class ConflictRecord
+class  ConflictRecord
 {
     public function __construct(
         public ConflictType     $type,
@@ -300,7 +300,7 @@ enum ResolutionStrategy: string
 /**
  * Result of resolving a conflict
  */
- readonly class ResolutionResult
+class  ResolutionResult
 {
     public function __construct(
         public bool             $resolved,
