@@ -1,40 +1,43 @@
 {
-    "name": "superinstance/equipment-consensus-engine",
-    "description": "Multi-agent deliberation equipment with Pathos/Logos/Ethos weighting for consensus building",
-    "type": "library",
-    "license": "MIT",
-    "keywords": [
-        "consensus",
-        "multi-agent",
-        "deliberation",
-        "pathos",
-        "logos",
-        "ethos",
-        "tripartite",
-        "argumentation",
-        "decision-making",
-        "superinstance"
-    ],
-    "authors": [
-        {
-            "name": "SuperInstance Ecosystem",
-            "homepage": "https://github.com/SuperInstance"
-        }
-    ],
-    "require": {
-        "php": ">=8.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "SuperInstance\\Equipment\\ConsensusEngine\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "SuperInstance\\Equipment\\ConsensusEngine\\Test\\": "tests/"
-        }
-    },
-    "minimum-stability": "stable",
-    "prefer-stable": true,
-    "readme": "README.md"
+  "name": "superinstance/equipment-consensus-engine",
+  "description": "Multi-agent deliberation equipment with Pathos/Logos/Ethos weighting for consensus building",
+  "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "consensus",
+    "multi-agent",
+    "deliberation",
+    "pathos",
+    "logos",
+    "ethos",
+    "tripartite",
+    "argumentation",
+    "decision-making",
+    "superinstance"
+  ],
+  "authors": [
+    {
+      "name": "SuperInstance Ecosystem",
+      "homepage": "https://github.com/SuperInstance"
+    }
+  ],
+  "require": {
+    "php": ">=8.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "SuperInstance\\Equipment\\ConsensusEngine\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "SuperInstance\\Equipment\\ConsensusEngine\\Test\\": "tests/"
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "readme": "README.md",
+  "require-dev": {
+    "phpunit/phpunit": "^10.0"
+  }
 }
